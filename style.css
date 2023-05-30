@@ -1,0 +1,13 @@
+video{
+    /* display: none; */
+}
+
+body {
+    display: flex;
+}
+
+.scene {
+    width: 600px;
+    height: 550px;
+    float: right;
+}

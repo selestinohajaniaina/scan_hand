@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<style>
+			#videoElement {
+				width: 600px;
+				height: 400px;
+				background-color: black;
+				display: none;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<video autoplay='true' id='videoElement'></video>
+		<canvas id='canvas' width='600px' height='400px'></canvas>
+	<body>
+	<!-- Require the peer dependencies of handpose. -->
+	<script src="node_modules/@tensorflow/tfjs-core/dist/tf-core.js"></script>
+	<script src="node_modules/@tensorflow/tfjs-converter/dist/tf-converter.js"></script>
+
+	<!-- You must explicitly require a TF.js backend if you're not using the tfs union bundle. -->
+	<script src="node_modules/@tensorflow/tfjs-backend-webgl/dist/tf-backend-webgl.js"></script>
+	<!-- Alternatively you can use the WASM backend: <script src="https://unpkg.com/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script> -->
+
+	<script src="node_modules/@tensorflow-models/handpose/dist/handpose.js"></script>
+	
+	<script>
+		let fingerLookupIndices = {
+		  thumb: [0, 1, 2, 3, 4],
+		  indexFinger: [0, 5, 6, 7, 8],
+		  middleFinger: [0, 9, 10, 11, 12],
+		  ringFinger: [0, 13, 14, 15, 16],
+		  pinky: [0, 17, 18, 19, 20]
+		};
+		function drawPoint(y, x) {
+		  ctx.beginPath();
+		  ctx.arc(x, y, 10, 0, 2 * Math.PI);
+		  ctx.fillStyle =`#FF5733`;
+		  ctx.fill();
+		}
+
+		function drawKeypoints(keypoints) {
+		  const keypointsArray = keypoints;
+			console.log(keypointsArray);
+		//   for (let i = 0; i < keypointsArray.length; i++) {
+			const y = keypointsArray[0][0];
+			const x = keypointsArray[0][1];
+			drawPoint(x , y );
+		//   }
+
+		  const fingers = Object.keys(fingerLookupIndices);
+		  for (let i = 0; i < fingers.length; i++) {
+			const finger = fingers[i];
+			const points = fingerLookupIndices[finger].map(idx => keypoints[idx]);
+			drawPath(points, false);
+		  }
+		}
+
+		function drawPath(points, closePath) {
+		  const region = new Path2D();
+		  region.moveTo(points[0][0], points[0][1]);
+		  for (let i = 1; i < points.length; i++) {
+			const point = points[i];
+			region.lineTo(point[0], point[1]);
+		  }
+
+		  if (closePath) {
+			region.closePath();
+		  }
+		  ctx.stroke(region);
+		}
+		let video = document.getElementById('videoElement');
+		let canvas = document.getElementById('canvas');
+		let ctx = canvas.getContext('2d');
+		let model;
+		const setUpCamera = () => {
+			if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    // Not adding `{ audio: true }` since we only want video now
+    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        //video.src = window.URL.createObjectURL(stream);
+        video.srcObject = stream;
+        video.play();
+    });
+}
+		}
+		const detectHandPoses = async () => {
+				const prediction = await model.estimateHands(video);
+				ctx.drawImage(video,0,0,600,400);
+				ctx.beginPath();
+				ctx.strokeStyle='yellow';
+				ctx.lineWidth = '8';
+				// console.log(prediction.length);
+				prediction.forEach((pred) => {
+					const result = pred.landmarks;
+					const annotations = pred.annotations;
+					drawKeypoints(result, annotations);
+				});
+		}
+		setUpCamera();
+		video.addEventListener("loadeddata", async () => {
+			model = await handpose.load();
+			setInterval(detectHandPoses,100);
+		});
+	</script>
+</html>
