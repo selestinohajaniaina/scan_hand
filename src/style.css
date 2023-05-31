@@ -1,0 +1,22 @@
+video{
+    /* display: none; */
+}
+
+#canvas {
+    border: 2px solid #000;
+    position: absolute;
+    left: 9px;
+    transform: rotateY(180DEG);
+}
+
+#videoElement{
+    width: 600px;
+    height: auto;
+    border: 2px solid #000;
+    transform: rotateY(180DEG);
+}
+
+#tableau {
+    float: right;
+    border: 2px solid #000;
+}

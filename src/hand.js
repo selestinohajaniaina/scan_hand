@@ -1,3 +1,5 @@
+		var directionX , directionY ;
+
 		let fingerLookupIndices = {
 		  thumb: [0, 1, 2, 3, 4],
 		  indexFinger: [0, 5, 6, 7, 8],
@@ -8,11 +10,11 @@
 		function drawPoint(y, x, text) {
 		//   ctx.clearRect(0, 0, canvas.width, canvas.height);
 		  ctx.beginPath();
-		  ctx.arc(x, y, 10, 0, 2 * Math.PI);
+		  ctx.arc(x, y, 5, 0, 2 * Math.PI);
 		//   ctx.fillStyle =`#FF5733`;
-		ctx.font = 'bold 20px Verdana, Arial, serif';
+		// ctx.font = 'bold 20px Verdana, Arial, serif';
 		  ctx.fill();
-		  ctx.fillText(text, x, y);
+		//   ctx.fillText(text, x, y);
 		}
 
 		function drawKeypoints(keypoints) {
@@ -56,6 +58,7 @@
 		let video = document.getElementById('videoElement');
 		let canvas = document.getElementById('canvas');
 		let ctx = canvas.getContext('2d');
+		let ctxp = canvas.getContext('2d');
 		let model;
 		const setUpCamera = () => {
 			if(navigator.mediaDevices.getUserMedia) {
@@ -70,12 +73,12 @@
 		}
 		const detectHandPoses = async () => {
 				const prediction = await model.estimateHands(video);
-				// ctx.drawImage(video,0,0,650,450);
+				// ctx.drawImage(video,0,0);
 				ctx.clearRect(0, 0, canvas.width, canvas.height)
 				ctx.beginPath();
 				ctx.fillStyle = "red";
 				ctx.strokeStyle='yellow';
-				ctx.lineWidth = '8';
+				ctx.lineWidth = '2';
 				// console.log(prediction.length);
 				prediction.forEach((pred) => {
 					const result = pred.landmarks;
@@ -86,30 +89,19 @@
 		setUpCamera();
 		video.addEventListener("loadeddata", async () => {
 			model = await handpose.load();
-			setInterval(detectHandPoses,1);
+			setInterval(() => {
+				detectHandPoses();
+			},1);
 		});
 
 
 
 		// Fonction pour afficher "I love You" en fonction des points de la main
 function afficherMessage(points) {
-	console.clear();
-	// Comparaison des positions des points pour déterminer le message
-	if (
-		points[20][1] < points[16][1] && points[4][1] < points[16][1] &&
-		points[20][1] < points[12][1] && points[4][1] < points[12][1] &&
-		points[20][1] < points[8][1] && points[4][1] < points[8][1]
-		) {
-	  console.log("You ");
-		} else if (
-		points[20][1] < points[16][1] &&
-		points[20][1] < points[12][1] &&
-		points[20][1] < points[8][1] &&
-		points[20][1] < points[4][1] &&
-		points[4][0] < points[8][0]
-		) {
-	  console.log("I ");
-	} else {
-	  console.log(" ");
-	}
+	ctxp.fillStyle = 'lime';
+    ctxp.fillRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3 );
+	// console.clear();
+	directionX = points[12][0];
+	directionY = points[12][1];
+	// console.log("resultat12: ",directionX); // -200 ou +200[12 anbony]
   }
