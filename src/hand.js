@@ -98,8 +98,8 @@
 
 		// Fonction pour afficher "I love You" en fonction des points de la main
 function afficherMessage(points) {
-	ctxp.fillStyle = 'lime';
-    ctxp.fillRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3 );
+	ctxp.strokeStyle = 'lime';
+    ctxp.strokeRect(canvas.width/3, canvas.height/3, canvas.width/3, canvas.height/3 );
 	// console.clear();
 	directionX = points[12][0];
 	directionY = points[12][1];

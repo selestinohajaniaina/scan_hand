@@ -47,7 +47,7 @@ function maj() {
         ctxSn.fillRect(e[0], e[1], blkSize, blkSize ); 
         if( snakeX == e[0] && snakeY == e[1]) {
             gameOver = true;
-        // alert("game over");
+        alert("game over");
         }
     });
 
@@ -62,7 +62,7 @@ function maj() {
 
     if(snakeX < 0 || snakeX > col * blkSize || snakeY < 0 || snakeY > row * blkSize) {
         gameOver = true;
-        // alert("game over");
+        alert("game over");
     }
 
 }
@@ -73,16 +73,31 @@ function food() {
 }
 
 function changeDrx(x,y) {
-    if(y < canvas.height/3 && y > 0 && x > canvas.width/3 && x < 2 * canvas.width/3) {
+    if (y < canvas.height/3 && y > 0 && x > canvas.width/3 && x < 2 * canvas.width/3) {
 		console.log("UP");
-	}else if(y < canvas.height && y > 2 * canvas.height /3 && x > canvas.width/3 && x < 2 * canvas.width/3) {
-		console.log("DOWN");
-	}else if(y < 2 * canvas.height / 3 && y > canvas.height /3 && x > 0 && x < canvas.width/3) {
-		console.log("RIGHT");
-	}else if(y < 2 * canvas.height / 3 && y > canvas.height/3 && x < canvas.width && x > 2 * canvas.width/3){
+        //up
+        veloX = 0;
+        veloY = -1;
 
+	} else if (y < canvas.height && y > 2 * canvas.height /3 && x > canvas.width/3 && x < 2 * canvas.width/3) {
+		console.log("DOWN");
+        //down
+        veloX = 0;
+        veloY = 1;
+
+	} else if (y < 2 * canvas.height / 3 && y > canvas.height /3 && x > 0 && x < canvas.width/3) {
+		console.log("RIGHT");
+        //right
+        veloX = 1;
+        veloY = 0;
+
+	} else if (y < 2 * canvas.height / 3 && y > canvas.height/3 && x < canvas.width && x > 2 * canvas.width/3) {
 		console.log("LEFT");
-    }else {
+        //left
+        veloX = -1;
+        veloY = 0;
+
+    } else {
         console.log('autre');
     }
     // if (y <= 200 && veloX != 1){
